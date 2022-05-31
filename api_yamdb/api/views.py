@@ -1,11 +1,8 @@
 from rest_framework import viewsets
 
-from api_yamdb.api.serializers import (
-    CategorySerializer,
-    GenreSerializer,
-    TitleSerializer
-)
-from api_yamdb.reviews.models import Category, Genre, Title
+from api.serializers import (
+    CategorySerializer, GenreSerializer, TitleSerializer)
+from reviews.models import Category, Genre, Title
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
