@@ -6,8 +6,6 @@ from reviews.models import Category, Genre, Title
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    """API Category"""
-
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     search_fields = ('name',)
@@ -15,8 +13,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class GenreViewSet(viewsets.ModelViewSet):
-    """API Genre"""
-
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     search_fields = ('name',)
@@ -24,7 +20,5 @@ class GenreViewSet(viewsets.ModelViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    """API Title"""
-
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
