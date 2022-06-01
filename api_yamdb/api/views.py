@@ -2,7 +2,11 @@ from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 
 from .serializers import (
-    CategorySerializer, GenreSerializer, TitleSerializer, ReviewSerializer)
+    CategorySerializer,
+    GenreSerializer,
+    TitleSerializer,
+    ReviewSerializer,
+)
 from reviews.models import Category, Genre, Title, Review, Title
 
 

@@ -39,4 +39,3 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('author', 'title')
         model = Review
-
