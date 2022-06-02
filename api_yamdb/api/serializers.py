@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from rest_framework import serializers
 
 from reviews.models import Category, Genre, Title, Review
@@ -21,13 +22,32 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class TitleSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    genre = GenreSerializer(many=True)
 
     class Meta:
         model = Title
         fields = (
-            'id', 'name', 'year', 'category', 'genre'
+            'id', 'name', 'year', 'description', 'category'
         )
+
+
+class TitleCreateSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Category.objects.all(),
+    )
+
+    class Meta:
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'description', 'category'
+        )
+
+    def validate_year(self, value):
+        current_year = timezone.now().year
+        if not 0 <= value <= current_year:
+            raise serializers.ValidationError(
+                'Неправильный год'
+            )
+        return value
 
 
 class ReviewSerializer(serializers.ModelSerializer):

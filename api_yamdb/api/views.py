@@ -7,6 +7,7 @@ from .serializers import (
     CategorySerializer,
     GenreSerializer,
     ReviewSerializer,
+    TitleCreateSerializer,
     TitleSerializer,
     UserSerializer,
 )
@@ -32,6 +33,11 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
 
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH',):
+            return TitleCreateSerializer
+        return TitleSerializer
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
@@ -51,7 +57,6 @@ class UsersListViewSet(mixins.CreateModelMixin,
                        mixins.DestroyModelMixin,
                        mixins.ListModelMixin,
                        GenericViewSet):
-
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin, ]

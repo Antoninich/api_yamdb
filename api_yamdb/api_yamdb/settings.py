@@ -63,19 +63,19 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.'
-        'UserAttributeSimilarityValidator',
+                'UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.'
-        'MinimumLengthValidator',
+                'MinimumLengthValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.'
-        'CommonPasswordValidator',
+                'CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.'
-        'NumericPasswordValidator',
+                'NumericPasswordValidator',
     },
 ]
 
@@ -98,7 +98,7 @@ AUTH_USER_MODEL = 'users.UserProfile'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.'
-    'LimitOffsetPagination',
+                                'LimitOffsetPagination',
     'PAGE_SIZE': 100,
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
