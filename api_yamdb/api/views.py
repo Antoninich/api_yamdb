@@ -6,6 +6,7 @@ from .serializers import (
     GenreSerializer,
     TitleSerializer,
     ReviewSerializer,
+    TitleCreateSerializer,
 )
 from reviews.models import Category, Genre, Title, Review, Title
 
@@ -27,6 +28,11 @@ class GenreViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH',):
+            return TitleCreateSerializer
+        return TitleSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
