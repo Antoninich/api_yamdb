@@ -8,11 +8,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-<<<<<<< HEAD
-# Application definition
-
-=======
->>>>>>> master
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -21,11 +16,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-<<<<<<< HEAD
     'reviews.apps.ReviewsConfig',
-=======
     'rest_framework_simplejwt',
->>>>>>> master
     'api.apps.ApiConfig',
     'users.apps.UsersConfig',
     'reviews.apps.ReviewsConfig',
@@ -62,20 +54,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api_yamdb.wsgi.application'
 
-<<<<<<< HEAD
-# Database
-
-=======
->>>>>>> master
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-<<<<<<< HEAD
-# Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -96,29 +80,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-
-=======
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.'
-        'UserAttributeSimilarityValidator',
+                'UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.'
-        'MinimumLengthValidator',
+                'MinimumLengthValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.'
-        'CommonPasswordValidator',
+                'CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.'
-        'NumericPasswordValidator',
+                'NumericPasswordValidator',
     },
 ]
 
->>>>>>> master
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -129,11 +109,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-<<<<<<< HEAD
-# Static files (CSS, JavaScript, Images)
-
-=======
->>>>>>> master
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
@@ -143,7 +118,7 @@ AUTH_USER_MODEL = 'users.UserProfile'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.'
-    'LimitOffsetPagination',
+                                'LimitOffsetPagination',
     'PAGE_SIZE': 100,
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
