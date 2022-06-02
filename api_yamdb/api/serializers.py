@@ -3,6 +3,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from reviews.models import Category, Genre, Title, Review
+from users.models import UserProfile
 
 User = get_user_model()
 
@@ -58,3 +59,16 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('author', 'title')
         model = Review
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'role'
+        )
+        model = UserProfile
