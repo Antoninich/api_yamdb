@@ -80,6 +80,14 @@ class Review(BaseTextModel):
         validators=[MinValueValidator(1), MaxValueValidator(10)],
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                name='unique_author_title',
+                fields=['author', 'title'],
+            ),
+        ]
+
     def __str__(self):
         return self.text
 

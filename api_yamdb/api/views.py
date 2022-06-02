@@ -7,11 +7,12 @@ from .serializers import (
     CategorySerializer,
     GenreSerializer,
     ReviewSerializer,
+    CommentSerializer,
     TitleCreateSerializer,
     TitleSerializer,
     UserSerializer,
 )
-from reviews.models import Category, Genre, Review, Title
+from reviews.models import Category, Genre, Review, Title, Comment
 from users.models import UserProfile
 
 
@@ -51,6 +52,19 @@ class ReviewViewSet(viewsets.ModelViewSet):
         title = get_object_or_404(Title, pk=self.kwargs['title_id'])
         serializer.save(author=self.request.user, title=title)
 
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    
+    def get_queryset(self):
+        get_object_or_404(Title, pk=self.kwargs['title_id'])
+        review = get_object_or_404(Review, pk=self.kwargs['review_id'])
+        return Comment.objects.filter(review=review)
+
+    def perform_create(self, serializer):
+        review = get_object_or_404(Review, pk=self.kwargs['review_id'])
+        serializer.save(author=self.request.user, review=review)
 
 class UsersListViewSet(mixins.CreateModelMixin,
                        mixins.UpdateModelMixin,

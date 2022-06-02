@@ -7,10 +7,10 @@ from .views import (
     ReviewViewSet,
     TitleViewSet,
     UsersListViewSet,
-    UserViewSet
+    UserViewSet,
+    CommentViewSet,
 )
 
-app_name = 'api'
 API_VERSION_V1 = 'v1'
 
 router_v1 = DefaultRouter()
@@ -21,6 +21,11 @@ router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,
     basename='reviews'
+)
+router_v1.register(
+    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
+    CommentViewSet,
+    basename='comments'
 )
 router_v1.register(r'users', UsersListViewSet, basename='users-list')
 router_v1.register(r'users/me', UserViewSet, basename='user-detail')
