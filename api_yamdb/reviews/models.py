@@ -1,6 +1,6 @@
-from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from django.utils import timezone
 
 from core.models import BaseTextModel
@@ -9,16 +9,16 @@ User = get_user_model()
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=256, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=256, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
@@ -30,11 +30,6 @@ class Title(models.Model):
         validators=[MaxValueValidator(timezone.now().year)],
     )
     description = models.CharField(max_length=256, null=True, blank=True)
-    genre = models.ManyToManyField(
-        'Genre',
-        through='GenreTitle',
-        related_name='genre',
-    )
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_NULL,
@@ -42,6 +37,14 @@ class Title(models.Model):
         blank=True,
         related_name='categories',
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                name='unique_title',
+                fields=['name', 'year'],
+            ),
+        ]
 
     def __str__(self):
         return self.name

@@ -1,14 +1,19 @@
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 from django.shortcuts import get_object_or_404
+from rest_framework.viewsets import GenericViewSet
 
+from .permissions import IsAdmin
 from .serializers import (
     CategorySerializer,
     GenreSerializer,
-    TitleSerializer,
     ReviewSerializer,
     CommentSerializer,
+    TitleCreateSerializer,
+    TitleSerializer,
+    UserSerializer,
 )
-from reviews.models import Category, Genre, Title, Review, Comment
+from reviews.models import Category, Genre, Review, Title, Comment
+from users.models import UserProfile
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -29,6 +34,11 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
 
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH',):
+            return TitleCreateSerializer
+        return TitleSerializer
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
@@ -42,6 +52,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         title = get_object_or_404(Title, pk=self.kwargs['title_id'])
         serializer.save(author=self.request.user, title=title)
 
+
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -54,3 +65,22 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         review = get_object_or_404(Review, pk=self.kwargs['review_id'])
         serializer.save(author=self.request.user, review=review)
+
+class UsersListViewSet(mixins.CreateModelMixin,
+                       mixins.UpdateModelMixin,
+                       mixins.DestroyModelMixin,
+                       mixins.ListModelMixin,
+                       GenericViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdmin, ]
+    search_fields = '=user__username'
+
+
+class UserViewSet(mixins.UpdateModelMixin,
+                  mixins.DestroyModelMixin,
+                  mixins.ListModelMixin,
+                  GenericViewSet):
+
+    def filter_queryset(self):
+        return UserProfile.objects.filter(user=self.request.user)

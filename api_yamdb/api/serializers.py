@@ -1,9 +1,10 @@
-from turtle import title
 from django.contrib.auth import get_user_model
 from django.db.models import Avg
+from django.utils import timezone
 from rest_framework import serializers
 
 from reviews.models import Category, Genre, Title, Review, Comment
+from users.models import UserProfile
 
 User = get_user_model()
 
@@ -22,13 +23,12 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class TitleSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    genre = GenreSerializer(many=True)
     rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
         fields = (
-            'id', 'name', 'year', 'category', 'genre'
+            'id', 'name', 'year', 'description', 'category'
         )
 
     def get_rating(self, title):
@@ -36,6 +36,26 @@ class TitleSerializer(serializers.ModelSerializer):
             'score__avg'
         ]
         return round(rating)
+
+
+class TitleCreateSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Category.objects.all(),
+    )
+
+    class Meta:
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'description', 'category'
+        )
+
+    def validate_year(self, value):
+        current_year = timezone.now().year
+        if not 0 <= value <= current_year:
+            raise serializers.ValidationError(
+                'Неправильный год'
+            )
+        return value
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -58,3 +78,16 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'author', 'pub_date')
         read_only_fields = ('author', 'review')
         model = Comment
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'role'
+        )
+        model = UserProfile
