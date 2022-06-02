@@ -37,6 +37,11 @@ class Title(models.Model):
         blank=True,
         related_name='categories',
     )
+    genre = models.ManyToManyField(
+        'Genre',
+        through='GenreTitle',
+        related_name='genre',
+    )
 
     class Meta:
         constraints = [
