@@ -17,7 +17,7 @@ PATH = os.path.join(STATICFILES_DIRS[0], 'data/')
 
 
 class Command(BaseCommand):
-    help = "Loads data from users.csv"
+    help = 'Loads data from users.csv'
 
     def handle(self, *args, **options):
 
@@ -26,7 +26,7 @@ class Command(BaseCommand):
         #     print(ALREDY_LOADED_ERROR_MESSAGE)
         #     return
 
-        print("Loading users data")
+        print('Loading users data')
 
         users_file = 'category.csv'
         users_path = os.path.join(PATH, users_file)

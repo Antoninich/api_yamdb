@@ -1,9 +1,9 @@
 from django.contrib import admin
-from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.admin import UserAdmin
-from django.utils.translation import gettext, gettext_lazy as _
+from django.contrib.auth.forms import AdminPasswordChangeForm
+from django.utils.translation import gettext_lazy as _
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import UserProfile
 
 
@@ -15,8 +15,14 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'role', 'groups',
-                       'user_permissions'),
+            'fields': (
+                'is_active',
+                'is_staff',
+                'is_superuser',
+                'role',
+                'groups',
+                'user_permissions'
+            ),
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
@@ -27,7 +33,14 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
     change_password_form = AdminPasswordChangeForm
-    list_display = ('username', 'email', 'role', 'first_name', 'last_name', 'is_staff')
+    list_display = (
+        'username',
+        'email',
+        'role',
+        'first_name',
+        'last_name',
+        'is_staff'
+    )
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups', 'role')
     search_fields = ('username', 'first_name', 'last_name', 'email')
     ordering = ('username',)
