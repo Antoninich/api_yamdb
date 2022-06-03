@@ -1,9 +1,10 @@
 from rest_framework import mixins, viewsets, filters
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
+from django.shortcuts import get_object_or_404
 
-from .permissions import IsAdmin
+from .permissions import IsAdmin, ReadOnly
 from .serializers import (
     CategorySerializer,
     GenreSerializer,
@@ -22,6 +23,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = [IsAdmin | ReadOnly]
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -29,11 +31,13 @@ class GenreViewSet(viewsets.ModelViewSet):
     serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = [IsAdmin | ReadOnly]
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    permission_classes = [IsAdmin | ReadOnly]
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH',):

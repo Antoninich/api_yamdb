@@ -1,9 +1,9 @@
-from rest_framework import permissions
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 from users.enums import Roles
 
 
-class IsUser(permissions.BasePermission):
+class IsUser(BasePermission):
 
     def has_permission(self, request, view):
         return (
@@ -12,7 +12,7 @@ class IsUser(permissions.BasePermission):
         )
 
 
-class IsModerator(permissions.BasePermission):
+class IsModerator(BasePermission):
 
     def has_permission(self, request, view):
         return (
@@ -21,10 +21,15 @@ class IsModerator(permissions.BasePermission):
         )
 
 
-class IsAdmin(permissions.BasePermission):
+class IsAdmin(BasePermission):
 
     def has_permission(self, request, view):
         return(
             request.user.is_authenticated
             and request.user.role == Roles.admin.name
         )
+
+
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
