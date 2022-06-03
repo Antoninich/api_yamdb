@@ -1,5 +1,6 @@
 from rest_framework import mixins, viewsets, filters
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import GenericViewSet
 
 from .permissions import IsAdmin
@@ -66,21 +67,18 @@ class CommentViewSet(viewsets.ModelViewSet):
         review = get_object_or_404(Review, pk=self.kwargs['review_id'])
         serializer.save(author=self.request.user, review=review)
 
-class UsersListViewSet(mixins.CreateModelMixin,
-                       mixins.UpdateModelMixin,
-                       mixins.DestroyModelMixin,
-                       mixins.ListModelMixin,
-                       GenericViewSet):
+
+class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdmin, ]
+    permission_classes = [IsAdmin | IsAdminUser]
     search_fields = '=user__username'
 
 
-class UserViewSet(mixins.UpdateModelMixin,
-                  mixins.DestroyModelMixin,
-                  mixins.ListModelMixin,
-                  GenericViewSet):
+class UserMeViewSet(mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    mixins.ListModelMixin,
+                    GenericViewSet):
 
     def filter_queryset(self):
         return UserProfile.objects.filter(user=self.request.user)

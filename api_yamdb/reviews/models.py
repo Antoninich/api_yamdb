@@ -3,6 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 
+from api_yamdb import settings
 from core.models import BaseTextModel
 
 User = get_user_model()
@@ -71,7 +72,7 @@ class GenreTitle(models.Model):
 
 class Review(BaseTextModel):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='reviews'
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews'
     )
     title = models.ForeignKey(
         Title, on_delete=models.CASCADE, related_name='reviews'
@@ -94,7 +95,7 @@ class Review(BaseTextModel):
 
 class Comment(BaseTextModel):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments'
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments'
     )
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, related_name='comments'

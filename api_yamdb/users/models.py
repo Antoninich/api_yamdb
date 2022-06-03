@@ -6,13 +6,14 @@ from .enums import Roles
 
 
 class UserProfile(AbstractUser):
+    email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
     role = models.CharField(
         choices=Roles.choices(),
         default='user',
-        max_length=50
+        max_length=50,
     )
-    bio = models.TextField()
+    bio = models.TextField(blank=True)
 
     def __str__(self):
         return self.username
