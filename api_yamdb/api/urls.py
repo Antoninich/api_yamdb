@@ -3,14 +3,15 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     CategoryViewSet,
+    CommentViewSet,
     GenreViewSet,
     ReviewViewSet,
     TitleViewSet,
-    UsersListViewSet,
     UserViewSet,
-    CommentViewSet,
+    UserMeViewSet,
 )
 
+app_name = 'api'
 API_VERSION_V1 = 'v1'
 
 router_v1 = DefaultRouter()
@@ -22,14 +23,15 @@ router_v1.register(
     ReviewViewSet,
     basename='reviews'
 )
+router_v1.register(r'users', UserViewSet, basename='users')
+router_v1.register(r'users/me', UserMeViewSet, basename='user-me')
 router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
     CommentViewSet,
     basename='comments'
 )
-router_v1.register(r'users', UsersListViewSet, basename='users-list')
-router_v1.register(r'users/me', UserViewSet, basename='user-detail')
 
 urlpatterns = [
     path(f'{API_VERSION_V1}/', include(router_v1.urls)),
+    path(f'{API_VERSION_V1}/auth/', include('authentifications.urls')),
 ]
