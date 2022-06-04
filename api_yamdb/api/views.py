@@ -89,7 +89,6 @@ class UserMeViewSet(mixins.UpdateModelMixin,
                     mixins.DestroyModelMixin,
                     mixins.ListModelMixin,
                     GenericViewSet):
-    permission_classes = [IsAuthenticated]
 
     def filter_queryset(self):
         return UserProfile.objects.filter(user=self.request.user)
