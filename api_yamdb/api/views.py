@@ -1,5 +1,4 @@
 from rest_framework import mixins, viewsets, filters
-from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from django.shortcuts import get_object_or_404
@@ -7,9 +6,7 @@ from django.shortcuts import get_object_or_404
 from .permissions import (
     IsAdmin,
     ReadOnly,
-    IsPostAndAuthenticated,
-    IsAuthor,
-    IsModerator,
+    ReadOnlyOrAuthorModeratorAdmin,
 )
 from .serializers import (
     CategorySerializer,
@@ -20,6 +17,7 @@ from .serializers import (
     TitleSerializer,
     UserSerializer,
 )
+from core.views import ExcludePutViewSet
 from reviews.models import Category, Genre, Review, Title, Comment
 from users.models import UserProfile
 
@@ -40,7 +38,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdmin | ReadOnly]
 
 
-class TitleViewSet(viewsets.ModelViewSet):
+class TitleViewSet(ExcludePutViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     permission_classes = [IsAdmin | ReadOnly]
@@ -54,12 +52,10 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleSerializer
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(ExcludePutViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [
-        ReadOnly | IsPostAndAuthenticated | IsAuthor | IsModerator | IsAdmin
-    ]
+    permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
         title = get_object_or_404(Title, pk=self.kwargs['title_id'])
@@ -70,9 +66,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, title=title)
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(ExcludePutViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
         get_object_or_404(Title, pk=self.kwargs['title_id'])
