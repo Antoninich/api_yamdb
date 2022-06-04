@@ -23,7 +23,7 @@ class PatchModelMixin:
         serializer.save()
 
         
-class ExcludePutViewSet(
+class ExcludePutModelViewSet(
     PatchModelMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,

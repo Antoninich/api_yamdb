@@ -33,5 +33,5 @@ router_v1.register(
 
 urlpatterns = [
     path(f'{API_VERSION_V1}/', include(router_v1.urls)),
-    #path(f'{API_VERSION_V1}/auth/', include('authentifications.urls')),
+    path(f'{API_VERSION_V1}/auth/', include('authentifications.urls')),
 ]

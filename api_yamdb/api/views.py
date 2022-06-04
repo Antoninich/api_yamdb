@@ -17,7 +17,7 @@ from .serializers import (
     TitleSerializer,
     UserSerializer,
 )
-from core.views import ExcludePutViewSet
+from core.views import ExcludePutModelViewSet
 from reviews.models import Category, Genre, Review, Title, Comment
 from users.models import UserProfile
 
@@ -38,21 +38,18 @@ class GenreViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdmin | ReadOnly]
 
 
-class TitleViewSet(ExcludePutViewSet):
+class TitleViewSet(ExcludePutModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     permission_classes = [IsAdmin | ReadOnly]
 
     def get_serializer_class(self):
-        if self.request.method in (
-            'POST',
-            'PATCH',
-        ):
+        if self.request.method in ('POST', 'PATCH',):
             return TitleCreateSerializer
         return TitleSerializer
 
 
-class ReviewViewSet(ExcludePutViewSet):
+class ReviewViewSet(ExcludePutModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
@@ -66,7 +63,7 @@ class ReviewViewSet(ExcludePutViewSet):
         serializer.save(author=self.request.user, title=title)
 
 
-class CommentViewSet(ExcludePutViewSet):
+class CommentViewSet(ExcludePutModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
@@ -88,12 +85,10 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = '=user__username'
 
 
-class UserMeViewSet(
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+class UserMeViewSet(mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    mixins.ListModelMixin,
+                    GenericViewSet):
     permission_classes = [IsAuthenticated]
 
     def filter_queryset(self):
