@@ -45,6 +45,7 @@ class ReadOnlyOrAuthorModeratorAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
         return (
             request.method in SAFE_METHODS
+            or request.user.is_superuser
             or obj.author == request.user
             or not request.user.is_anonymous
             and request.user.role in [Roles.moderator.name, Roles.admin.name]
