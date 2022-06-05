@@ -8,7 +8,6 @@ from .views import (
     ReviewViewSet,
     TitleViewSet,
     UserViewSet,
-    UserMeViewSet,
 )
 
 app_name = 'api'
@@ -24,7 +23,6 @@ router_v1.register(
     basename='reviews'
 )
 router_v1.register(r'users', UserViewSet, basename='users')
-router_v1.register(r'users/me', UserMeViewSet, basename='user-me')
 router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
     CommentViewSet,
@@ -32,6 +30,5 @@ router_v1.register(
 )
 
 urlpatterns = [
-    path(f'{API_VERSION_V1}/', include(router_v1.urls)),
-    path(f'{API_VERSION_V1}/auth/', include('authentifications.urls')),
+    path(f'{API_VERSION_V1}/', include(router_v1.urls), name='v1'),
 ]

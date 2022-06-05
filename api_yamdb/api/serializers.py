@@ -1,12 +1,10 @@
-from django.contrib.auth import get_user_model
 from django.db.models import Avg
 from django.utils import timezone
 from rest_framework import serializers
 
-from reviews.models import Category, Genre, Title, Review, Comment
+from reviews.models import Category, Comment, Genre, Review, Title
+from users.enums import Roles
 from users.models import UserProfile
-
-User = get_user_model()
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -81,7 +79,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         fields = (
             'username',
@@ -89,6 +86,15 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'bio',
-            'role'
+            'role',
         )
         model = UserProfile
+
+    def validate_role(self, value):
+        try:
+            if self.instance.role == Roles.admin.name:
+                return value
+            else:
+                return self.instance.role
+        except AttributeError:
+            return value
