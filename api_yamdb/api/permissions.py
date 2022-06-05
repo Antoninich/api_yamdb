@@ -1,8 +1,8 @@
-from rest_framework import permissions
+from rest_framework.permissions import BasePermission
 from users.enums import Roles
 
 
-class IsMeAndSuperUserAndAdmin(permissions.BasePermission):
+class IsMeAndSuperUserAndAdmin(BasePermission):
     def has_permission(self, request, view):
         try:
             username_me = view.kwargs.get('username') == 'me'
