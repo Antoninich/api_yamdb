@@ -3,14 +3,6 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 from users.enums import Roles
 
 
-class IsUser(BasePermission):
-    def has_permission(self, request, view):
-        return (
-            request.user.is_authenticated
-            and request.user.role == Roles.user.name
-        )
-
-
 class IsModerator(BasePermission):
     def has_permission(self, request, view):
         return (
