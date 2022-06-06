@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Avg
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -28,13 +29,15 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = (
-            'id', 'name', 'year', 'description', 'category'
+            'id', 'name', 'year', 'description', 'category', 'rating', 'genre'
         )
 
     def get_rating(self, title):
-        rating = Review.objects.filter(title=title).aggregate(Avg('score'))[
-            'score__avg'
-        ]
+        reviews = Review.objects.filter(title=title)
+        if reviews.count() == 0:
+            return None
+
+        rating = reviews.aggregate(Avg('score'))['score__avg']
         return round(rating)
 
 
@@ -67,6 +70,19 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = ('author', 'title')
         model = Review
+
+    def validate(self, data):
+        if self.context['request'].method != 'POST':
+            return data
+        title_id = self.context['request'].parser_context['kwargs']['title_id']
+        title = get_object_or_404(Title, pk=title_id)
+        user = self.context['request'].user
+        title_review_exist = title.reviews.filter(author=user).exists()
+        if title_review_exist:
+            raise serializers.ValidationError(
+                'Оставить можно только один отзыв'
+            )
+        return data
 
 
 class CommentSerializer(serializers.ModelSerializer):
