@@ -1,10 +1,7 @@
 from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, viewsets, filters
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, status, viewsets
+from rest_framework import mixins, filters, status, viewsets
 from rest_framework.response import Response
 
 from .filters import TitleFilter
