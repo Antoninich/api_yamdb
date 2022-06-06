@@ -13,7 +13,14 @@ from .views import (
 app_name = 'api'
 API_VERSION_V1 = 'v1'
 
-router_v1 = DefaultRouter()
+
+class NoPutRouter(DefaultRouter):
+    def get_method_map(self, viewset, method_map):
+        bound_methods = super().get_method_map(viewset, method_map)
+        bound_methods.pop('put', None)
+        return bound_methods
+
+router_v1 = NoPutRouter()
 router_v1.register('categories', CategoryViewSet, basename='categories')
 router_v1.register('genres', GenreViewSet, basename='genres')
 router_v1.register('titles', TitleViewSet, basename='titles')
