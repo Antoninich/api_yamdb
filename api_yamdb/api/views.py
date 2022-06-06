@@ -4,10 +4,13 @@ from rest_framework import mixins, viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from django.shortcuts import get_object_or_404
+from rest_framework import filters, status, viewsets
+from rest_framework.response import Response
 
 from .filters import TitleFilter
 from .permissions import (
     IsAdmin,
+    IsMeAndSuperUserAndAdmin,
     ReadOnly,
     ReadOnlyOrAuthorModeratorAdmin,
 )
@@ -20,7 +23,6 @@ from .serializers import (
     TitleSerializer,
     UserSerializer,
 )
-from core.views import ExcludePutModelViewSet
 from reviews.models import Category, Genre, Review, Title, Comment
 from users.models import UserProfile
 
@@ -49,7 +51,7 @@ class GenreViewSet(mixins.CreateModelMixin,
     lookup_field = 'slug'
 
 
-class TitleViewSet(ExcludePutModelViewSet):
+class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.annotate(
         rating=Avg('reviews__score')).all().order_by('name')
     permission_classes = [IsAdmin | ReadOnly]
@@ -62,7 +64,7 @@ class TitleViewSet(ExcludePutModelViewSet):
         return TitleSerializer
 
 
-class ReviewViewSet(ExcludePutModelViewSet):
+class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
@@ -76,7 +78,7 @@ class ReviewViewSet(ExcludePutModelViewSet):
         serializer.save(author=self.request.user, title=title)
 
 
-class CommentViewSet(ExcludePutModelViewSet):
+class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
@@ -94,14 +96,22 @@ class CommentViewSet(ExcludePutModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsMeAndSuperUserAndAdmin]
     search_fields = '=user__username'
+    lookup_field = 'username'
 
+    def get_object(self):
+        if self.kwargs.get('username') == 'me':
+            username = self.request.user
+        else:
+            username = self.kwargs['username']
+        obj = get_object_or_404(UserProfile, username=username)
+        self.check_object_permissions(self.request, obj)
+        return obj
 
-class UserMeViewSet(mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    mixins.ListModelMixin,
-                    GenericViewSet):
-
-    def filter_queryset(self):
-        return UserProfile.objects.filter(user=self.request.user)
+    def destroy(self, request, *args, **kwargs):
+        if self.kwargs.get('username') == 'me':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

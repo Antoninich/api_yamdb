@@ -14,6 +14,7 @@ class UserProfile(AbstractUser):
         max_length=50,
     )
     bio = models.TextField(blank=True)
+    confirmation_code = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.username
