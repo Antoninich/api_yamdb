@@ -66,7 +66,7 @@ class GetTokenSerializer(TokenObtainSlidingSerializer):
         except KeyError:
             pass
 
-        conf_code = get_object_or_404(UserProfile, username=attrs['username'])
+        conf_code = get_object_or_404(UserProfile, username=attrs['username']).confirmation_code
         if conf_code != attrs['confirmation_code']:
             raise serializers.ValidationError(
                 {'confirmation_code': 'confirmation_code некорректный.'})
