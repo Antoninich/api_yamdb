@@ -2,18 +2,23 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.response import Response
 
-from reviews.models import Category, Comment, Genre, Review, Title
-from users.models import UserProfile
-from .permissions import IsMeAndSuperUserAndAdmin
+from .permissions import (
+    IsAdmin,
+    IsMeAndSuperUserAndAdmin,
+    ReadOnly,
+    ReadOnlyOrAuthorModeratorAdmin,
+)
 from .serializers import (
     CategorySerializer,
-    CommentSerializer,
     GenreSerializer,
     ReviewSerializer,
+    CommentSerializer,
     TitleCreateSerializer,
     TitleSerializer,
     UserSerializer,
 )
+from reviews.models import Category, Genre, Review, Title, Comment
+from users.models import UserProfile
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -21,6 +26,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = [IsAdmin | ReadOnly]
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -28,11 +34,13 @@ class GenreViewSet(viewsets.ModelViewSet):
     serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = [IsAdmin | ReadOnly]
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    permission_classes = [IsAdmin | ReadOnly]
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH',):
@@ -43,6 +51,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
         title = get_object_or_404(Title, pk=self.kwargs['title_id'])
@@ -56,6 +65,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
         get_object_or_404(Title, pk=self.kwargs['title_id'])

@@ -1,5 +1,5 @@
 from reviews.models import (Category, Genre, GenreTitle,
-                            Title)
+                            Title, Review, Comment)
 import os
 from csv import DictReader
 
@@ -97,3 +97,36 @@ class Command(BaseCommand):
                 last_name=row['last_name'],
             )
             user.save()
+
+        users_file = 'review.csv'
+        users_path = os.path.join(PATH, users_file)
+        with open(users_path, newline='', encoding='utf-8') as file:
+            data = DictReader(file)
+
+            for row in data:
+                title = Title.objects.get(pk=row['title_id'])
+                author = UserProfile.objects.get(pk=row['author'])
+                review = Review(
+                    id=row['id'],
+                    text=row['text'],
+                    author=author,
+                    title=title,
+                    score=row['score'],
+                )
+                review.save()
+
+        users_file = 'comments.csv'
+        users_path = os.path.join(PATH, users_file)
+        with open(users_path, newline='', encoding='utf-8') as file:
+            data = DictReader(file)
+
+            for row in data:
+                review = Review.objects.get(pk=row['review_id'])
+                author = UserProfile.objects.get(pk=row['author'])
+                comment = Comment(
+                    id=row['id'],
+                    text=row['text'],
+                    author=author,
+                    review=review,
+                )
+                comment.save()
