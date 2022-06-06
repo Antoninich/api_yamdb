@@ -24,12 +24,13 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class TitleSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
+    genre = GenreSerializer(many=True)
     rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
         fields = (
-            'id', 'name', 'year', 'description', 'category', 'rating', 'genre'
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
         )
 
     def get_rating(self, title):
@@ -45,11 +46,14 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
         slug_field='slug', queryset=Category.objects.all(),
     )
+    genre = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Genre.objects.all(), many=True
+    )
 
     class Meta:
         model = Title
         fields = (
-            'id', 'name', 'year', 'description', 'category'
+            'id', 'name', 'year', 'description', 'genre', 'category'
         )
 
     def validate_year(self, value):
@@ -97,7 +101,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         fields = (
             'username',

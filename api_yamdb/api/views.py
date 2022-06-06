@@ -1,8 +1,11 @@
+from django.db.models import Avg
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from django.shortcuts import get_object_or_404
 
+from .filters import TitleFilter
 from .permissions import (
     IsAdmin,
     ReadOnly,
@@ -31,6 +34,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     permission_classes = [IsAdmin | ReadOnly]
+    lookup_field = 'slug'
 
 
 class GenreViewSet(mixins.CreateModelMixin,
@@ -40,14 +44,17 @@ class GenreViewSet(mixins.CreateModelMixin,
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    search_fields = ('=name',)
     permission_classes = [IsAdmin | ReadOnly]
+    lookup_field = 'slug'
 
 
 class TitleViewSet(ExcludePutModelViewSet):
-    queryset = Title.objects.all()
-    serializer_class = TitleSerializer
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')).all().order_by('name')
     permission_classes = [IsAdmin | ReadOnly]
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH',):
