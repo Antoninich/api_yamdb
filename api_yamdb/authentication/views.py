@@ -4,17 +4,10 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import AccessToken
 
 from authentication.serializers import CreateUserSerializer, GetTokenSerializer
+from core.utils import get_token_for_user
 from users.models import UserProfile
-
-
-def get_tokens_for_user(user):
-    token = AccessToken.for_user(user)
-    return {
-        'token': str(token),
-    }
 
 
 @api_view(['POST'])
@@ -24,7 +17,7 @@ def get_token(request):
     if get_token_serializer.is_valid():
         username = request.data.get('username')
         user = get_object_or_404(UserProfile, username=username)
-        token = get_tokens_for_user(user)
+        token = get_token_for_user(user)
         return JsonResponse(token, status=status.HTTP_201_CREATED)
     return JsonResponse(
         get_token_serializer.errors,

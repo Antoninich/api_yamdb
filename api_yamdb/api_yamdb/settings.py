@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,6 +22,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'reviews.apps.ReviewsConfig',
     'authentication.apps.AuthenticationConfig',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -116,7 +118,7 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
 SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': (
-        'rest_framework_simplejwt.tokens.SlidingToken',
         'rest_framework_simplejwt.tokens.AccessToken',
     ),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
 }

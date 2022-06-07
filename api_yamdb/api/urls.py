@@ -20,6 +20,7 @@ class NoPutRouter(DefaultRouter):
         bound_methods.pop('put', None)
         return bound_methods
 
+
 router_v1 = NoPutRouter()
 router_v1.register('categories', CategoryViewSet, basename='categories')
 router_v1.register('genres', GenreViewSet, basename='genres')

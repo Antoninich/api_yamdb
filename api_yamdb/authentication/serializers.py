@@ -5,18 +5,9 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainSlidingSerializer
-from rest_framework_simplejwt.tokens import SlidingToken
 
 from api.serializers import UserSerializer
 from users.models import UserProfile
-
-
-def get_tokens_for_user(user):
-    token = SlidingToken.for_user(user)
-
-    return {
-        'token': str(token),
-    }
 
 
 class CreateUserSerializer(UserSerializer):
@@ -66,13 +57,12 @@ class GetTokenSerializer(TokenObtainSlidingSerializer):
         except KeyError:
             pass
 
-        conf_code = get_object_or_404(UserProfile, username=attrs['username']).confirmation_code
+        conf_code = get_object_or_404(
+            UserProfile,
+            username=attrs['username']
+        ).confirmation_code
+
         if conf_code != attrs['confirmation_code']:
             raise serializers.ValidationError(
                 {'confirmation_code': 'confirmation_code некорректный.'})
-        
-
         return {}
-
-    def create(self, validated_data):
-        pass
