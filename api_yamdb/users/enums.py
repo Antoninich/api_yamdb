@@ -2,9 +2,9 @@ from enum import Enum
 
 
 class Roles(Enum):
-    user = 'user'
-    moderator = 'moderator'
-    admin = 'admin'
+    user = 'Аутентифицированный пользователь'
+    moderator = 'Модератор'
+    admin = 'Администратор'
 
     @classmethod
     def choices(cls):
