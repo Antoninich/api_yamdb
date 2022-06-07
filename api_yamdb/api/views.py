@@ -20,7 +20,7 @@ from .serializers import (
     TitleSerializer,
     UserSerializer,
 )
-from reviews.models import Category, Genre, Review, Title, Comment
+from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import UserProfile
 
 
