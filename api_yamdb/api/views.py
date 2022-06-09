@@ -1,7 +1,7 @@
 from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, mixins, status, viewsets
+from rest_framework import filters, status, viewsets
 from rest_framework.response import Response
 
 from .filters import TitleFilter
@@ -28,19 +28,11 @@ from users.models import UserProfile
 class CategoryViewSet(CustomMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
-    permission_classes = [IsAdmin | ReadOnly]
-    lookup_field = 'slug'
 
 
 class GenreViewSet(CustomMixin):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('=name',)
-    permission_classes = [IsAdmin | ReadOnly]
-    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
