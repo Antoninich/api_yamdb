@@ -50,9 +50,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = (
-            'id', 'name', 'year', 'description', 'genre', 'category'
-        )
+        fields = '__all__'
 
     def validate_year(self, value):
         current_year = timezone.now().year

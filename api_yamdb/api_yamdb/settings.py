@@ -7,11 +7,15 @@ load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.getenv('KEY', default='p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs')
+SECRET_KEY = os.getenv(
+    'KEY',
+    default='p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
+)
 
 DEBUG = False
 
-ALLOWED_HOSTS = [os.getenv('HOSTS', default=None), ]
+ALLOWED_HOSTS = [ip for ip in os.getenv('HOSTS', default=None)]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -86,7 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
