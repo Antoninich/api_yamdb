@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv(
 
 DEBUG = False
 
-ALLOWED_HOSTS = [ip for ip in os.getenv('HOSTS', default=None)]
+ALLOWED_HOSTS = [ip for ip in os.getenv('HOSTS', default='*')]
 
 
 INSTALLED_APPS = [

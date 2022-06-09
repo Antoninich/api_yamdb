@@ -58,11 +58,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
-        title = get_object_or_404(Title, pk=self.kwargs['title_id'])
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         return Review.objects.filter(title=title)
 
     def perform_create(self, serializer):
-        title = get_object_or_404(Title, pk=self.kwargs['title_id'])
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         serializer.save(author=self.request.user, title=title)
 
 
@@ -72,12 +72,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
-        get_object_or_404(Title, pk=self.kwargs['title_id'])
-        review = get_object_or_404(Review, pk=self.kwargs['review_id'])
+        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
         return Comment.objects.filter(review=review)
 
     def perform_create(self, serializer):
-        review = get_object_or_404(Review, pk=self.kwargs['review_id'])
+        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
         serializer.save(author=self.request.user, review=review)
 
 
@@ -92,7 +91,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.kwargs.get('username') == 'me':
             username = self.request.user
         else:
-            username = self.kwargs['username']
+            username = self.kwargs.get('username')
         obj = get_object_or_404(UserProfile, username=username)
         self.check_object_permissions(self.request, obj)
         return obj
