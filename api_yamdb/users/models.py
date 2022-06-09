@@ -12,9 +12,17 @@ class UserProfile(AbstractUser):
         choices=Roles.choices(),
         default='user',
         max_length=50,
+        verbose_name='Роль'
     )
-    bio = models.TextField(blank=True)
-    confirmation_code = models.PositiveIntegerField(default=0)
+    bio = models.TextField('О себе', blank=True)
+    confirmation_code = models.PositiveIntegerField(
+        'Код подтверждения',
+        default=0
+    )
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
         return self.username

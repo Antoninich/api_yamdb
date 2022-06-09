@@ -7,6 +7,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainSlidingSerializer
 
 from api.serializers import UserSerializer
+from api_yamdb.settings import EMAIL_SENDER, EMAIL_SUBJECT
 from users.models import UserProfile
 
 
@@ -21,9 +22,9 @@ class CreateUserSerializer(UserSerializer):
     def create(self, validated_data):
         confirmation_code = struct.unpack('H', os.urandom(2))[0]
         send_mail(
-            'Тема письма',
+            EMAIL_SUBJECT,
             str(confirmation_code),
-            'from@example.com',
+            EMAIL_SENDER,
             [validated_data.get('email')],
             fail_silently=False,
         )
@@ -33,8 +34,7 @@ class CreateUserSerializer(UserSerializer):
     def validate_username(self, value):
         if value == 'me':
             raise serializers.ValidationError('me')
-        else:
-            return value
+        return value
 
 
 class GetTokenSerializer(TokenObtainSlidingSerializer):

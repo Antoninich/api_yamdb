@@ -123,6 +123,8 @@ REST_FRAMEWORK = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+EMAIL_SUBJECT = 'Код подтверждения'
+EMAIL_SENDER = 'from@example.com'
 
 SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': (
