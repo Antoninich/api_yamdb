@@ -58,7 +58,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
-        title = get_object_or_404(Title, pk=self.kwargs['title_id'])
+        title = Title.objects.get(pk=self.kwargs['title_id'])
         return Review.objects.filter(title=title)
 
     def perform_create(self, serializer):
@@ -72,8 +72,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
-        get_object_or_404(Title, pk=self.kwargs['title_id'])
-        review = get_object_or_404(Review, pk=self.kwargs['review_id'])
+        review = Review.objects.get(pk=self.kwargs['review_id'])
         return Comment.objects.filter(review=review)
 
     def perform_create(self, serializer):
