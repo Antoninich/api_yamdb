@@ -53,3 +53,9 @@ python3 manage.py migrate
 ```
 python3 manage.py runserver
 ```
+
+Импорт тестовых данных:
+
+```
+python3 manage.py load_data
+```
