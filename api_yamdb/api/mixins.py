@@ -6,7 +6,7 @@ from .permissions import (
 )
 
 
-class CustomMixin(mixins.CreateModelMixin,
+class CreateListDestroyMixin(mixins.CreateModelMixin,
                   mixins.ListModelMixin,
                   mixins.DestroyModelMixin,
                   viewsets.GenericViewSet):
