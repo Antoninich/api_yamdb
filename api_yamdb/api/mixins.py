@@ -7,10 +7,7 @@ from .permissions import (
 
 
 class CreateListDestroyMixin(mixins.CreateModelMixin,
-                  mixins.ListModelMixin,
-                  mixins.DestroyModelMixin,
-                  viewsets.GenericViewSet):
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
-    permission_classes = [IsAdmin | ReadOnly]
-    lookup_field = 'slug'
+                             mixins.ListModelMixin,
+                             mixins.DestroyModelMixin,
+                             viewsets.GenericViewSet):
+    pass

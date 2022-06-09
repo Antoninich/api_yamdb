@@ -28,9 +28,13 @@ from users.models import UserProfile
 class CategoryViewSet(CreateListDestroyMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    permission_classes = [IsAdmin | ReadOnly]
+    lookup_field = 'slug'
 
 
-class GenreViewSet(CreateListDestroyMixin):
+class GenreViewSet(CategoryViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
 
