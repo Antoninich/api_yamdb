@@ -72,7 +72,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
 
     def get_queryset(self):
-        review = Review.objects.get(pk=self.kwargs.get('review_id'))
+        review = get_object_or_404(Review, pk=self.kwargs['review_id'])
         return Comment.objects.filter(review=review)
 
     def perform_create(self, serializer):
