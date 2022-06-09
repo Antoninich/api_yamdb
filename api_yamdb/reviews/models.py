@@ -1,54 +1,61 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.utils import timezone
 
 from api_yamdb import settings
 from core.models import BaseTextModel
+from reviews.utils import validate_date
 
 User = get_user_model()
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField('имя', max_length=256, unique=True)
+    slug = models.SlugField('слаг', unique=True)
+
+    class Meta:
+        verbose_name = 'Категория'
 
     def __str__(self):
         return self.name
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField('имя', max_length=256, unique=True)
+    slug = models.SlugField('слаг', unique=True)
+
+    class Meta:
+        verbose_name = 'Жанр'
 
     def __str__(self):
         return self.name
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256)
-    year = models.IntegerField(
-        validators=[MaxValueValidator(timezone.now().year)],
-    )
-    description = models.CharField(max_length=256, null=True, blank=True)
+    name = models.CharField('название', max_length=256)
+    year = models.IntegerField('год', blank=True, validators=[validate_date])
+    description = models.CharField('описание', max_length=256, blank=True)
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='categories',
+        verbose_name='категория'
     )
     genre = models.ManyToManyField(
         'Genre',
         through='GenreTitle',
         related_name='genre',
+        verbose_name='жанр'
     )
 
     class Meta:
+        verbose_name = 'Произведение'
         constraints = [
             models.UniqueConstraint(
                 name='unique_title',
-                fields=['name', 'year'],
+                fields=('name', 'year'),
             ),
         ]
 
@@ -65,6 +72,9 @@ class GenreTitle(models.Model):
         'Genre',
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        verbose_name = 'Жанры_Произведения'
 
     def __str__(self):
         return self.title
@@ -87,7 +97,7 @@ class Review(BaseTextModel):
         constraints = [
             models.UniqueConstraint(
                 name='unique_author_title',
-                fields=['author', 'title'],
+                fields=('author', 'title'),
             ),
         ]
 

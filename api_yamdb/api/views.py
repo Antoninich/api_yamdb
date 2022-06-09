@@ -5,6 +5,7 @@ from rest_framework import filters, mixins, status, viewsets
 from rest_framework.response import Response
 
 from .filters import TitleFilter
+from .mixins import CustomMixin
 from .permissions import (
     IsAdmin,
     IsMeAndSuperUserAndAdmin,
@@ -24,10 +25,7 @@ from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import UserProfile
 
 
-class CategoryViewSet(mixins.CreateModelMixin,
-                      mixins.ListModelMixin,
-                      mixins.DestroyModelMixin,
-                      viewsets.GenericViewSet):
+class CategoryViewSet(CustomMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
@@ -36,10 +34,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
     lookup_field = 'slug'
 
 
-class GenreViewSet(mixins.CreateModelMixin,
-                   mixins.ListModelMixin,
-                   mixins.DestroyModelMixin,
-                   viewsets.GenericViewSet):
+class GenreViewSet(CustomMixin):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
