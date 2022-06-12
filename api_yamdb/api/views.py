@@ -30,7 +30,7 @@ class CategoryViewSet(CreateListDestroyMixin):
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    permission_classes = [IsAdmin | ReadOnly]
+    permission_classes = ((IsAdmin | ReadOnly),)
     lookup_field = 'slug'
 
 
@@ -42,7 +42,7 @@ class GenreViewSet(CategoryViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.annotate(
         rating=Avg('reviews__score')).all().order_by('name')
-    permission_classes = [IsAdmin | ReadOnly]
+    permission_classes = ((IsAdmin | ReadOnly),)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
 
@@ -55,7 +55,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
+    permission_classes = (ReadOnlyOrAuthorModeratorAdmin,)
 
     def get_queryset(self):
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
@@ -69,7 +69,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [ReadOnlyOrAuthorModeratorAdmin]
+    permission_classes = (ReadOnlyOrAuthorModeratorAdmin,)
 
     def get_queryset(self):
         review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
@@ -83,7 +83,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsMeAndSuperUserAndAdmin]
+    permission_classes = (IsMeAndSuperUserAndAdmin,)
     search_fields = '=user__username'
     lookup_field = 'username'
 
