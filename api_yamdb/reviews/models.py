@@ -1,12 +1,9 @@
-from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from api_yamdb import settings
 from core.models import BaseTextModel
 from core.validators import validate_date
-
-User = get_user_model()
 
 
 class Category(models.Model):
@@ -35,7 +32,11 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField('Название', max_length=256)
-    year = models.IntegerField('Год', blank=True, validators=[validate_date])
+    year = models.PositiveSmallIntegerField(
+        'Год',
+        blank=True,
+        validators=[validate_date]
+    )
     description = models.CharField('Описание', max_length=256, blank=True)
     category = models.ForeignKey(
         'Category',
@@ -91,7 +92,7 @@ class Review(BaseTextModel):
         related_name='reviews',
         verbose_name='Произведение',
     )
-    score = models.SmallIntegerField(
+    score = models.PositiveSmallIntegerField(
         'Оценка',
         validators=[MinValueValidator(1), MaxValueValidator(10)],
     )
